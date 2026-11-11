@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#051F20">
+<title>Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script>document.documentElement.dataset.theme = localStorage.getItem('dashboard.theme') || 'forest';</script>
+</head>
+<body>
+<div class="bg-glow"></div>
+
+<aside class="sidebar glass">
+  <div class="profile">
+    <div class="avatar" id="avatar">R</div>
+    <div><div class="profile-name" id="userName">—</div><div class="profile-sub" id="userSub"></div></div>
+  </div>
+  <nav class="side-nav" id="sideNav"></nav>
+</aside>
+
+<main class="main">
+  <header class="topbar" id="topbar">
+    <div class="greeting">
+      <h1 id="greeting">Bonjour</h1>
+      <p id="today"></p>
+    </div>
+    <label class="search glass" id="searchBox">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="search" type="search" placeholder="Rechercher partout…" autocomplete="off">
+    </label>
+    <div class="search-results glass" id="searchResults"></div>
+  </header>
+
+  <div class="backup-banner glass" id="backupBanner" hidden>
+    <span>💾 <b>Sauvegarde mensuelle</b><small id="backupInfo"></small></span>
+    <div class="row-gap"><button class="btn-ghost small" id="backupLater">Plus tard</button><button class="btn-primary" id="backupNow">Sauvegarder</button></div>
+  </div>
+
+  <section class="view active" data-view="home">
+    <div class="home-layout">
+      <div class="home-main">
+        <div class="stats-grid" data-module="stats" id="stats"></div>
+        <div class="grid-2">
+          <div class="card glass" data-module="projects">
+            <div class="card-head"><h2>Projets actifs</h2><button class="link" data-goto="projects">Tout voir</button></div>
+            <div id="homeProjects" class="project-list"></div>
+          </div>
+          <div class="card glass" data-module="tasks">
+            <div class="card-head"><h2>Aujourd'hui</h2><span class="pill" id="taskCount"></span></div>
+            <div id="homeTasks"></div>
+          </div>
+          <div class="card glass" data-module="agenda">
+            <div class="card-head"><h2>Prochains événements</h2><button class="link" data-goto="agenda">Agenda</button></div>
+            <div id="homeEvents"></div>
+          </div>
+          <div class="card glass" data-module="fitness">
+            <div class="card-head"><h2>Salle de sport</h2><button class="link" data-goto="fitness">Détails</button></div>
+            <div id="homeFitness"></div>
+          </div>
+        </div>
+      </div>
+      <aside class="home-side" data-module="applications">
+        <div class="card glass">
+          <div class="card-head"><h2>Candidatures</h2>
+            <div class="row-gap">
+              <label class="btn-ghost small" title="Importer un JSON">Importer<input type="file" id="importApps" accept=".json" hidden></label>
+              <button class="btn-icon" id="addApp">+</button>
+            </div>
+          </div>
+          <div class="app-kpis" id="appKpis"></div>
+          <div class="chart" id="appChart"></div>
+          <h3 class="sub">Dernières candidatures</h3>
+          <div id="appLatest"></div>
+          <button class="link" id="appShowAll">Voir tout</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="view" data-view="projects">
+    <div class="card glass">
+      <div class="card-head"><h2>Projets</h2>
+        <div class="seg" id="projFilter">
+          <button class="active" data-f="all">Tous</button><button data-f="En cours">En cours</button><button data-f="En pause">Pause</button><button data-f="Terminé">Terminés</button>
+        </div>
+      </div>
+      <div id="projectList" class="project-list"></div>
+      <button class="btn-primary" id="addProject">+ Nouveau projet</button>
+    </div>
+    <div class="card glass">
+      <div class="card-head"><h2>Tâches</h2><span class="pill" id="taskCount2"></span></div>
+      <form class="task-form" id="taskForm">
+        <input class="input" name="title" placeholder="Nouvelle tâche…" required>
+        <div class="row-gap">
+          <div class="seg" id="taskScope">
+            <button type="button" class="active" data-s="day">Aujourd'hui</button><button type="button" data-s="week">Semaine</button><button type="button" data-s="date">Date</button>
+          </div>
+          <input class="input date-pick" type="date" name="date" hidden>
+          <button class="btn-icon">+</button>
+        </div>
+      </form>
+      <div id="taskList"></div>
+      <div class="card-head" style="margin-top:20px"><h2>Récurrentes</h2><button class="btn-icon" id="addRecurring">+</button></div>
+      <div id="recurringList"></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="agenda">
+    <div class="card glass">
+      <div class="card-head">
+        <button class="btn-icon" id="calPrev">‹</button>
+        <h2 id="calTitle"></h2>
+        <button class="btn-icon" id="calNext">›</button>
+      </div>
+      <div class="cal-dow"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="card glass">
+      <div class="card-head"><h2 id="dayTitle">Événements</h2>
+        <div class="row-gap"><button class="btn-ghost" id="exportIcs">Exporter .ics</button><button class="btn-icon" id="addEvent">+</button></div>
+      </div>
+      <div id="dayEvents"></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="fitness">
+    <div class="card glass">
+      <div id="todaySession"></div>
+      <div class="card-head" style="margin-top:18px"><h2>Activité</h2>
+        <div class="toggle-wrap"><span id="fitLabelMonth" class="on">30 jours</span>
+          <button class="toggle" id="fitToggle" aria-label="Basculer la période"><span></span></button>
+          <span id="fitLabelAll">Depuis toujours</span></div>
+      </div>
+      <div class="heat-legend"><span><i class="l1"></i>Faible</span><span><i class="l2"></i>Moyen</span><span><i class="l3"></i>Élevé</span><span><i class="l4"></i>Record</span></div>
+      <div class="heatmap" id="heatmap"></div>
+      <div class="stats-grid small" id="fitStats"></div>
+      <h3 class="sub">Records personnels</h3>
+      <div id="fitRecords"></div>
+    </div>
+    <div class="card glass">
+      <div class="card-head"><h2>Séances</h2><button class="btn-icon" id="addWorkout">+</button></div>
+      <div id="workoutList"></div>
+    </div>
+  </section>
+
+  <section class="view" data-view="settings">
+    <div class="card glass">
+      <div class="card-head"><h2>Thème</h2></div>
+      <div class="theme-pick" id="themePick"></div>
+      <div class="card-head" style="margin-top:20px"><h2>Modules</h2></div>
+      <div id="moduleToggles"></div>
+    </div>
+    <div class="card glass">
+      <div class="card-head"><h2>Programme hebdo</h2></div>
+      <div id="programEditor"></div>
+      <div class="card-head" style="margin-top:20px"><h2>Données</h2></div>
+      <div class="storage" id="storageGauge"></div>
+      <div class="row-gap wrap">
+        <button class="btn-ghost" id="exportJson">Exporter JSON</button>
+        <label class="btn-ghost">Importer JSON<input type="file" id="importJson" accept=".json" hidden></label>
+        <button class="btn-ghost danger" id="resetData">Réinitialiser</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="bottom-nav glass" id="bottomNav"></nav>
+
+<div class="modal" id="modal">
+  <form class="modal-box glass" id="modalForm">
+    <h2 id="modalTitle"></h2>
+    <div id="modalFields"></div>
+    <div class="row-gap end">
+      <button type="button" class="btn-ghost danger" id="modalDelete">Supprimer</button>
+      <button type="button" class="btn-ghost" id="modalCancel">Annuler</button>
+      <button type="submit" class="btn-primary">Enregistrer</button>
+    </div>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
