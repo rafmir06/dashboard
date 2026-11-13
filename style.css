@@ -337,3 +337,11 @@ input[type=range]{width:100%;accent-color:var(--c4)}
 }
 [data-theme=charcoal] .btn-primary{background:linear-gradient(90deg,#47484C,#B9BCC2)}
 [data-theme=charcoal] .progress i{background:linear-gradient(90deg,#4C4E51,#B9BCC2,#EDEEF0)}
+.input{min-width:0;max-width:100%}
+input[type=date].input,input[type=time].input{-webkit-appearance:none;appearance:none;min-height:44px;display:block}
+input[type=date]::-webkit-date-and-time-value{text-align:left}
+@media (max-width:767px){
+  .task-form .row-gap{display:grid;grid-template-columns:1fr auto;gap:8px}
+  .task-form .seg{min-width:0}
+  .task-form .date-pick{grid-column:1/-1;grid-row:2;width:100%;min-width:0}
+}
