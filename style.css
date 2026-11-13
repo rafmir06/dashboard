@@ -93,8 +93,9 @@ h3.sub{font-size:.8rem;text-transform:uppercase;letter-spacing:.1em;color:var(--
 .check svg{width:14px;height:14px;opacity:0;transform:scale(.4);transition:all .2s var(--ease);stroke:var(--c0);stroke-width:3}
 .task.done .check{background:var(--c4);box-shadow:var(--glow)}
 .task.done .check svg{opacity:1;transform:none}
-.task span{flex:1;transition:color .2s}
-.task.done span{color:var(--muted);text-decoration:line-through}
+.t-body{flex:1;min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.t-title{flex:1 1 auto;min-width:0;overflow-wrap:anywhere;transition:color .2s}
+.task.done .t-title{color:var(--muted);text-decoration:line-through}
 .task .del{opacity:.35;padding:4px 8px}
 .task .del:hover{opacity:1;color:var(--danger)}
 
@@ -345,3 +346,22 @@ input[type=date]::-webkit-date-and-time-value{text-align:left}
   .task-form .seg{min-width:0}
   .task-form .date-pick{grid-column:1/-1;grid-row:2;width:100%;min-width:0}
 }
+.profile-form{display:grid;gap:4px}
+.profile-form .btn-primary{justify-self:start}
+@media (min-width:768px){.profile-form{grid-template-columns:1fr 1fr auto;align-items:end;gap:12px}.profile-form .field{margin:0}}
+@media (max-width:380px){
+  .main{padding-left:12px;padding-right:12px}
+  .bottom-nav{left:8px;right:8px;padding:6px}
+  .nav-btn{padding:8px 6px;min-width:0;flex:1}
+  .stats-grid{gap:8px}
+  .stat{padding:12px}
+  .stat .val{font-size:1.35rem}
+  .card{padding:14px}
+  .week-strip{font-size:.6rem}
+}
+.card,.grid-2>*,.home-layout>*,.home-side{min-width:0}
+.task span,.p-name,.ev-info,.app-item>div,.rec-row span,.workout li,.record span:first-child{min-width:0;overflow-wrap:anywhere}
+.task .tag,.task .del,.task .check,.status,.pct{flex:none}
+.ev-info{flex:1}
+.p-top{min-width:0}
+[hidden]{display:none!important}

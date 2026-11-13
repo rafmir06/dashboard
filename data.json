@@ -1,7 +1,25 @@
 {
-  "user": { "name": "Rafael", "subtitle": "Tableau de bord personnel" },
-  "modules": { "stats": true, "projects": true, "tasks": true, "agenda": true, "fitness": true, "applications": true },
-  "program": ["Push", "Pull", "Legs", "Cardio", "Upper", "Lower", "Cardio"],
+  "user": {
+    "name": "",
+    "subtitle": ""
+  },
+  "modules": {
+    "stats": true,
+    "projects": true,
+    "tasks": true,
+    "agenda": true,
+    "fitness": true,
+    "applications": true
+  },
+  "program": [
+    "Push",
+    "Pull",
+    "Legs",
+    "Cardio",
+    "Upper",
+    "Lower",
+    "Cardio"
+  ],
   "projects": [],
   "tasks": [],
   "recurring": [],

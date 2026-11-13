@@ -148,7 +148,13 @@
 
   <section class="view" data-view="settings">
     <div class="card glass">
-      <div class="card-head"><h2>Thème</h2></div>
+      <div class="card-head"><h2>Profil</h2></div>
+      <form class="profile-form" id="profileForm">
+        <div class="field"><label>Prénom</label><input class="input" name="name" placeholder="Ton prénom" maxlength="30" autocomplete="given-name"></div>
+        <div class="field"><label>Sous-titre</label><input class="input" name="subtitle" placeholder="Tableau de bord personnel" maxlength="40"></div>
+        <button class="btn-primary">Enregistrer</button>
+      </form>
+      <div class="card-head" style="margin-top:20px"><h2>Thème</h2></div>
       <div class="theme-pick" id="themePick"></div>
       <div class="card-head" style="margin-top:20px"><h2>Modules</h2></div>
       <div id="moduleToggles"></div>

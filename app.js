@@ -135,7 +135,7 @@ function taskTag(t) {
 const taskHTML = t => `
   <div class="task${t.done ? ' done' : ''}">
     <button class="check" data-toggle-task="${t.id}" aria-label="Cocher">${CHECK}</button>
-    <span>${esc(t.title)}</span>${taskTag(t)}
+    <div class="t-body"><span class="t-title">${esc(t.title)}</span>${taskTag(t)}</div>
     <button class="del" data-edit-task="${t.id}" aria-label="Modifier">✎</button>
     <button class="del" data-del-task="${t.id}" aria-label="Supprimer">✕</button>
   </div>`;
@@ -143,7 +143,7 @@ const taskHTML = t => `
 const recTaskHTML = r => `
   <div class="task${recDone(r) ? ' done' : ''}">
     <button class="check" data-toggle-rec="${r.id}" aria-label="Cocher">${CHECK}</button>
-    <span>${esc(r.title)}</span><span class="tag rec">↻ ${r.freq === 'weekly' ? 'hebdo' : 'quotidien'}</span>
+    <div class="t-body"><span class="t-title">${esc(r.title)}</span><span class="tag rec">↻ ${r.freq === 'weekly' ? 'hebdo' : 'quotidien'}</span></div>
     <button class="del" data-edit-rec="${r.id}" aria-label="Modifier">✎</button>
     <button class="del" data-del-rec="${r.id}" aria-label="Supprimer">✕</button>
   </div>`;
@@ -243,7 +243,7 @@ function appsChartSVG() {
   const y = v => T + (1 - v / max) * (H - T - B);
   const line = pts.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(p[1]).toFixed(1)}`).join('');
   const grid = [0, .5, 1].map(f => { const v = Math.round(max * f); return `<line class="grid" x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text class="axis" x="0" y="${y(v) + 3}">${v}</text>`; }).join('');
-  const xl = pts.map((p, i) => i % 7 === 0 || i === days - 1 ? `<text class="axis" x="${x(i)}" y="${H - 4}" text-anchor="middle">${fmt(p[0])}</text>` : '').join('');
+  const xl = pts.map((p, i) => (i % 7 === 0 && i < days - 4) || i === days - 1 ? `<text class="axis" x="${x(i)}" y="${H - 4}" text-anchor="middle">${fmt(p[0])}</text>` : '').join('');
   const dots = pts.map((p, i) => p[1] ? `<circle class="dot" cx="${x(i)}" cy="${y(p[1])}" r="2.6"><title>${fmt(p[0])} : ${p[1]}</title></circle>` : '').join('');
   return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
     <defs><linearGradient id="ag" x1="0" x2="0" y1="0" y2="1"><stop offset="0" style="stop-color:var(--c4)" stop-opacity=".45"/><stop offset="1" style="stop-color:var(--c4)" stop-opacity="0"/></linearGradient></defs>
@@ -253,11 +253,14 @@ function appsChartSVG() {
 const RENDER = {
   header() {
     const { user } = state.data;
-    $('#greeting').textContent = `${new Date().getHours() < 18 ? 'Bonjour' : 'Bonsoir'}, ${user.name}`;
+    const name = (user.name || '').trim();
+    $('#greeting').textContent = (new Date().getHours() < 18 ? 'Bonjour' : 'Bonsoir') + (name ? `, ${name}` : '');
     $('#today').textContent = new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
-    $('#userName').textContent = user.name;
+    $('#userName').textContent = name || 'Mon dashboard';
     $('#userSub').textContent = user.subtitle || '';
-    $('#avatar').textContent = (user.name || '?')[0].toUpperCase();
+    $('#avatar').textContent = name ? name[0].toUpperCase() : '☺';
+    const f = $('#profileForm');
+    if (document.activeElement?.form !== f) { f.elements.name.value = name; f.elements.subtitle.value = user.subtitle || ''; }
   },
   modules() {
     const m = state.data.modules;
@@ -734,6 +737,14 @@ function bindEvents() {
     if (p !== undefined) { state.data.program[+p] = e.target.value; commit('fitness'); toast('Programme mis à jour'); }
   });
 
+  $('#profileForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const f = e.target;
+    state.data.user = { name: f.elements.name.value.trim(), subtitle: f.elements.subtitle.value.trim() };
+    f.querySelector('button').blur();
+    commit('header');
+    toast('Profil mis à jour');
+  });
   $('#projFilter').addEventListener('click', e => {
     const b = e.target.closest('button'); if (!b) return;
     $$('#projFilter button').forEach(x => x.classList.toggle('active', x === b));
@@ -843,7 +854,7 @@ function storageUsage() {
 function normalize(d, defaults) {
   for (const k of ['projects', 'tasks', 'events', 'workouts', 'recurring', 'applications']) d[k] ??= defaults[k] ?? [];
   d.modules ??= {};
-  d.user ??= defaults.user ?? { name: 'Moi' };
+  d.user ??= defaults.user ?? { name: '', subtitle: '' };
   if (!Array.isArray(d.program) || d.program.length !== 7) d.program = defaults.program ?? [...DEFAULT_PROGRAM];
   for (const t of d.tasks) { t.scope ??= 'day'; t.due ??= todayIso(); }
   return d;
